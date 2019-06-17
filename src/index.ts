@@ -112,27 +112,27 @@ export default class RabbitStats {
     getQueues = this.axios.get('queues');
 
     /**
-     *
+     * A list of all bindings.
      */
     getBindings = this.axios.get('bindings');
 
     /**
-     *
+     * A list of all users.
      */
     getUsers = this.axios.get('users');
 
     /**
-     *
+     * A list of all policies.
      */
     getPolicies = this.axios.get('policies');
 
     /**
-     *
+     * A list of all vhosts.
      */
     getVhosts = this.axios.get('vhosts');
 
     /**
-     *
+     * A list of all consumers in a given virtual host.
      * @param vhost
      */
     getVhostConsumers(vhost: string): AxiosPromise {
@@ -140,13 +140,13 @@ export default class RabbitStats {
     }
 
     /**
-     *
+     * A list of all exchanges.
      */
     getExchanges = this.axios.get('exchanges');
 
 
     /**
-     *
+     * A list of all exchanges in a given virtual host.
      * @param vhost
      */
     getVhostExchanges(vhost: string) {
@@ -154,7 +154,7 @@ export default class RabbitStats {
     }
 
     /**
-     *
+     * An individual exchange. To PUT an exchange, you will need a body looking something like this:
      * @param vhost
      * @param exchangeName
      */
