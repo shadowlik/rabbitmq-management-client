@@ -1,4 +1,4 @@
-import axios, { AxiosAdapter, AxiosInstance, AxiosPromise, AxiosResponse } from 'axios';
+import axios, { AxiosAdapter, AxiosInstance, AxiosPromise, AxiosResponse, AxiosRequestConfig } from 'axios';
 
 interface Options {
     timeout?: number;
@@ -168,10 +168,8 @@ export default class RabbitStats {
      * @param exchangeName
      * @param data
      */
-    putVhostExchange(vhost: string, exchangeName: string, data: string) {
-        vhost = encodeURIComponent(vhost);
-        exchangeName = encodeURIComponent(exchangeName);
-        return this.request('PUT', 'exchanges/' + vhost + '/' + exchangeName, null, data);
+    putVhostExchange(vhost: string, exchangeName: string, data: string): AxiosPromise {
+        return this.axios.put(`exchanges/${encodeURIComponent(vhost)}/${encodeURIComponent(exchangeName)}`, data);
     }
 
     /**
@@ -179,10 +177,8 @@ export default class RabbitStats {
      * @param vhost
      * @param exchangeName
      */
-    deleteVhostExchange(vhost: string, exchangeName: string) {
-        vhost = encodeURIComponent(vhost);
-        exchangeName = encodeURIComponent(exchangeName);
-        return this.request('DELETE', 'exchanges/' + vhost + '/' + exchangeName);
+    deleteVhostExchange(vhost: string, exchangeName: string): AxiosPromise {
+        return this.axios.delete(`exchanges/${encodeURIComponent(vhost)}/${encodeURIComponent(exchangeName)}`);
     }
 
     /**
@@ -190,9 +186,8 @@ export default class RabbitStats {
      * @param vhost
      * @param options
      */
-    getVhostQueues(vhost: string, options: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('GET', 'queues/' + vhost, options);
+    getVhostQueues(vhost: string, options: AxiosRequestConfig): AxiosPromise {
+        return this.axios.get(`queues/${encodeURIComponent(vhost)}`, options);
     }
 
     /**
@@ -200,10 +195,8 @@ export default class RabbitStats {
      * @param vhost
      * @param queueName
      */
-    getVhostQueue(vhost: string, queueName: string) {
-        vhost = encodeURIComponent(vhost);
-        queueName = encodeURIComponent(queueName);
-        return this.request('GET', 'queues/' + vhost + '/' + queueName);
+    getVhostQueue(vhost: string, queueName: string): AxiosPromise {
+        return this.axios.get(`queues/${encodeURIComponent(vhost)}/${encodeURIComponent(queueName)}`);
     }
 
     /**
@@ -212,10 +205,8 @@ export default class RabbitStats {
      * @param queueName
      * @param data
      */
-    putVhostQueue(vhost: string, queueName: string, data: string) {
-        vhost = encodeURIComponent(vhost);
-        queueName = encodeURIComponent(queueName);
-        return this.request('PUT', 'queues/' + vhost + '/' + queueName, null, data);
+    putVhostQueue(vhost: string, queueName: string, data: string): AxiosPromise {
+        return this.axios.put(`queues/${encodeURIComponent(vhost)}/${encodeURIComponent(queueName)}`, data);
     }
 
     /**
@@ -223,10 +214,8 @@ export default class RabbitStats {
      * @param vhost
      * @param queueName
      */
-    deleteVhostQueue(vhost: string, queueName: string) {
-        vhost = encodeURIComponent(vhost);
-        queueName = encodeURIComponent(queueName);
-        return this.request('DELETE', 'queues/' + vhost + '/' + queueName);
+    deleteVhostQueue(vhost: string, queueName: string): AxiosPromise {
+        return this.axios.delete(`queues/${encodeURIComponent(vhost)}/${encodeURIComponent(queueName)}`);
     }
 
     /**
@@ -235,9 +224,7 @@ export default class RabbitStats {
      * @param queueName
      */
     deleteVhostQueueContents(vhost: string, queueName: string) {
-        vhost = encodeURIComponent(vhost);
-        queueName = encodeURIComponent(queueName);
-        return this.request('DELETE', 'queues/' + vhost + '/' + queueName + '/contents');
+        return this.axios.delete(`queues/${encodeURIComponent(vhost)}/${encodeURIComponent(queueName)}/contents`);
     }
 
     /**
@@ -261,9 +248,8 @@ export default class RabbitStats {
      * @param vhost
      * @param body
      */
-    putVhost(vhost: string, body: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('PUT', 'vhosts/' + vhost, null, body);
+    putVhost(vhost: string, body: string): AxiosPromise {
+        return this.axios.put(`vhosts/${encodeURIComponent(vhost)}`, body);
     }
 
     /**
@@ -287,9 +273,8 @@ export default class RabbitStats {
      * @param name
      * @param body
      */
-    putUser(name: string, body: string) {
-        name = encodeURIComponent(name);
-        return this.request('PUT', 'users/' + name, null, body);
+    putUser(name: string, body: string): AxiosPromise {
+        return this.axios.put(`users/${encodeURIComponent(name)}`, body);
     }
 
     /**
@@ -314,10 +299,8 @@ export default class RabbitStats {
      * @param vhost
      * @param body
      */
-    setUserPermissions(user: string, vhost: string, body: string) {
-        vhost = encodeURIComponent(vhost);
-        user = encodeURIComponent(user);
-        return this.request('PUT', 'permissions/' + vhost + '/' + user, null, body);
+    setUserPermissions(user: string, vhost: string, body: string): AxiosPromise {
+        return this.axios.put('permissions/' + encodeURIComponent(vhost) + '/' + encodeURIComponent(user), body);
     }
 
     /**
