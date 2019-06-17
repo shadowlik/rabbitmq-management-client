@@ -1,10 +1,14 @@
-import axios from 'axios';
+import axios, { AxiosAdapter, AxiosInstance, AxiosPromise, AxiosResponse } from 'axios';
 
-class RabbitStats {
+interface Options {
+    timeout?: number;
+}
+
+export default class RabbitStats {
     uri: string;
     user: string;
     pass: string;
-    options: {};
+    axios: AxiosInstance;
 
     /**
      *
@@ -12,25 +16,23 @@ class RabbitStats {
      * @param user RabbitMQ Management User (Default: guest)
      * @param pass RabbitMQ Management Password (Default: Guest)
      */
-    constructor(uri: string = 'http://localhost:15672', user: string = 'guest', pass: string = 'guest') {
+    constructor(uri: string = 'http://localhost:15672', user: string = 'guest', pass: string = 'guest', options: Options = {}) {
         this.uri  = `${uri}/api/`;
         this.user = user;
         this.pass = pass;
 
-        // Options
-        this.options =  {
-            uri: this.uri,
-            json: true,
-            gzip: true,
-            auth: {
-                user: this.user,
-                pass: this.pass,
-                sendImmediately: false
-            },
+        // Axios
+        this.axios = axios.create({
+            baseURL: this.uri,
+            timeout: options.timeout || 1000,
             headers: {
                 'content-type': 'application/json'
-            }
-        };
+            },
+            auth: {
+                username: this.user,
+                password: this.pass,
+            },
+        });
     }
 
     /**
@@ -47,117 +49,110 @@ class RabbitStats {
     /**
      *
      */
-    getOverview = this.request('GET', 'overview');
+    getOverview = this.axios.get('overview');
 
     /**
      *
      */
-    getExtensions = this.request('GET', 'extensions');
+    getExtensions = this.axios.get('extensions');
 
      /**
      *
      */
-    getNodes = this.request('GET', 'nodes');
-
+    getNodes = this.axios.get('nodes');
 
     /**
      *
      * @param name
      */
-    getNode(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('GET', 'nodes/' + name);
+    getNode(name: string): AxiosPromise {
+        return this.axios.get(`nodes/${encodeURIComponent(name)}`);
     }
 
     /**
      *
      */
-    getConnections = this.request('GET', 'connections');
+    getConnections = this.axios.get('connections');
 
     /**
      *
      * @param name
      */
-    getConnection(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('GET', 'connections/' + name);
-    }
-
-    /**
-     *
-     * @param name
-     */
-    deleteConnection(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('DELETE', 'connections/' + name);
+    getConnection(name: string): AxiosPromise {
+        return this.axios.get(`connections/${encodeURIComponent(name)}`);
     }
 
     /**
      *
      * @param name
      */
-    getConnectionChannels(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('GET', 'connections/' + name + '/channels');
+    deleteConnection(name: string): AxiosPromise {
+        return this.axios.delete(`connections/${encodeURIComponent(name)}`);
     }
-
-    /**
-     *
-     */
-    getChannels = this.request('GET', 'channels');
 
     /**
      *
      * @param name
      */
-    getChannel(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('GET', 'channels/' + name);
+    getConnectionChannels(name: string): AxiosPromise {
+        return this.axios.get(`connections/${encodeURIComponent(name)}/channels`);
     }
 
     /**
      *
      */
-    getConsumers = this.request('GET', 'consumers');
+    getChannels = this.axios.get('channels');
+
+    /**
+     *
+     * @param name
+     */
+    getChannel(name: string): AxiosPromise {
+        return this.axios(`channels/${encodeURIComponent(name)}`);
+    }
 
     /**
      *
      */
-    getQueues = this.request('GET', 'queues');
+    getConsumers = this.axios.get('consumers');
 
     /**
      *
      */
-    getBindings = this.request('GET', 'bindings');
+    getQueues = this.axios.get('queues');
 
     /**
      *
      */
-    getUsers = this.request('GET', 'users');
+    getBindings = this.axios.get('bindings');
 
     /**
      *
      */
-    getPolicies = this.request('GET', 'policies');
+    getUsers = this.axios.get('users');
 
     /**
      *
      */
-    getVhosts = this.request('GET', 'vhosts');
+    getPolicies = this.axios.get('policies');
+
+    /**
+     *
+     */
+    getVhosts = this.axios.get('vhosts');
 
     /**
      *
      * @param vhost
      */
-    getVhostConsumers(vhost: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('GET', 'consumers/' + vhost);
+    getVhostConsumers(vhost: string): AxiosPromise {
+        return this.axios.get(`consumers/${encodeURIComponent(vhost)}`);
     }
 
     /**
      *
      */
-    getExchanges = this.request('GET', 'exchanges');
+    getExchanges = this.axios.get('exchanges');
 
 
     /**
@@ -165,8 +160,7 @@ class RabbitStats {
      * @param vhost
      */
     getVhostExchanges(vhost: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('GET', 'exchanges/' + vhost);
+        return this.axios.get(`exchanges/${encodeURIComponent(vhost)}`)
     }
 
     /**
@@ -174,9 +168,8 @@ class RabbitStats {
      * @param vhost
      * @param exchangeName
      */
-    getVhostExchange(vhost: string, exchangeName: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('GET', 'exchanges/' + vhost + '/' + exchangeName);
+    getVhostExchange(vhost: string, exchangeName: string): AxiosPromise {
+        return this.axios.get(`exchanges/${encodeURIComponent(vhost)}/${encodeURIComponent(exchangeName)}`);
     }
 
     /**
@@ -349,7 +342,4 @@ class RabbitStats {
     getCurrentUser() {
         return this.request('GET', 'whoami');
     }
-
-
-
 }
