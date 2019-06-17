@@ -35,34 +35,24 @@ export default class RabbitStats {
         });
     }
 
-    /**
-     *
-     * @param method HTTP Method
-     * @param path Path
-     * @param query Query
-     * @param body Body
-     */
-    private request(method: string, path: string, query?: string, body?: string) {
-
-    }
 
     /**
-     *
+     * Various random bits of information that describe the whole system.
      */
     getOverview = this.axios.get('overview');
 
     /**
-     *
+     * A list of extensions to the management plugin.
      */
     getExtensions = this.axios.get('extensions');
 
      /**
-     *
+     * A list of nodes in the RabbitMQ cluster.
      */
     getNodes = this.axios.get('nodes');
 
     /**
-     *
+     * An individual node in the RabbitMQ cluster. Add "?memory=true" to get memory statistics, and "?binary=true" to get a breakdown of binary memory use (may be expensive if there are many small binaries in the system).
      * @param name
      */
     getNode(name: string): AxiosPromise {
@@ -70,12 +60,12 @@ export default class RabbitStats {
     }
 
     /**
-     *
+     * A list of all open connections.
      */
     getConnections = this.axios.get('connections');
 
     /**
-     *
+     * An individual connection.
      * @param name
      */
     getConnection(name: string): AxiosPromise {
@@ -83,7 +73,7 @@ export default class RabbitStats {
     }
 
     /**
-     *
+     * DELETEing it will close the connection. Optionally set the "X-Reason" header when DELETEing to provide a reason.
      * @param name
      */
     deleteConnection(name: string): AxiosPromise {
@@ -91,7 +81,7 @@ export default class RabbitStats {
     }
 
     /**
-     *
+     * List of all channels for a given connection.
      * @param name
      */
     getConnectionChannels(name: string): AxiosPromise {
@@ -99,12 +89,12 @@ export default class RabbitStats {
     }
 
     /**
-     *
+     * A list of all open channels.
      */
     getChannels = this.axios.get('channels');
 
     /**
-     *
+     * Details about an individual channel.
      * @param name
      */
     getChannel(name: string): AxiosPromise {
@@ -112,12 +102,12 @@ export default class RabbitStats {
     }
 
     /**
-     *
+     * A list of all consumers.
      */
     getConsumers = this.axios.get('consumers');
 
     /**
-     *
+     * A list of all queues.
      */
     getQueues = this.axios.get('queues');
 
@@ -254,18 +244,16 @@ export default class RabbitStats {
      *
      * @param vhost
      */
-    getVhostBindings(vhost: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('GET', 'bindings/' + vhost);
+    getVhostBindings(vhost: string): AxiosPromise {
+        return this.axios.get(`bindings/${encodeURIComponent(vhost)}`)
     }
 
     /**
      *
      * @param vhost
      */
-    getVhost(vhost: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('GET', 'vhosts/' + vhost);
+    getVhost(vhost: string): AxiosPromise {
+        return this.axios.get(`vhosts/${encodeURIComponent(vhost)}`);
     }
 
     /**
@@ -282,18 +270,16 @@ export default class RabbitStats {
      *
      * @param vhost
      */
-    deleteVhost(vhost: string) {
-        vhost = encodeURIComponent(vhost);
-        return this.request('DELETE', 'vhosts/' + vhost);
+    deleteVhost(vhost: string): AxiosPromise {
+        return this.axios.delete(`vhosts/${encodeURIComponent(vhost)}`);
     }
 
     /**
      *
      * @param name
      */
-    getUser(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('GET', 'users/' + name);
+    getUser(name: string): AxiosPromise {
+        return this.axios.get(`users/${encodeURIComponent(name)}`)
     }
 
     /**
@@ -310,18 +296,16 @@ export default class RabbitStats {
      *
      * @param name
      */
-    deleteUser(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('DELETE', 'users/' + name);
+    deleteUser(name: string): AxiosPromise {
+        return this.axios.delete(`users/${encodeURIComponent(name)}`);
     }
 
     /**
      *
      * @param name
      */
-    getUserPermissions(name: string) {
-        name = encodeURIComponent(name);
-        return this.request('GET', 'users/' + name + '/permissions');
+    getUserPermissions(name: string): AxiosPromise {
+        return this.axios.get(`users/${encodeURIComponent(name)}/permissions`)
     }
 
     /**
@@ -339,7 +323,7 @@ export default class RabbitStats {
     /**
      *
      */
-    getCurrentUser() {
-        return this.request('GET', 'whoami');
+    getCurrentUser(): AxiosPromise {
+        return this.axios.get('whoami');
     }
 }
